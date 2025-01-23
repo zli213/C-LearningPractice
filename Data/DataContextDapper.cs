@@ -7,12 +7,21 @@ using System.Threading.Tasks;
 using HelloWorld.Models;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace HelloWorld.Data
 {
     public class DataContextDapper
     {
-        private string _connectionString = "Server=localhost;Database=DotNetCourseDatabase;Trusted_Connection=False;TrustServerCertificate=True;User Id=sa;Password=YourStrong@Passw0rd;";
+        // private readonly IConfiguration _config;
+        private readonly string _connectionString;
+        public DataContextDapper(IConfiguration config)
+        {
+            // _config = config;
+             _connectionString = config.GetConnectionString("DefaultConnection")
+                ?? throw new ArgumentNullException(nameof(config), "Connection string cannot be null.");
+        }
+        // private string _connectionString = "Server=localhost;Database=DotNetCourseDatabase;Trusted_Connection=False;TrustServerCertificate=True;User Id=sa;Password=YourStrong@Passw0rd;";
 
         public IEnumerable<T> LoadData<T>(string sql)
         {
